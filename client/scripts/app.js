@@ -12,12 +12,11 @@ application.prototype.init = function() {
     handleSubmit();
   });
   // });
-
+  // debugger
   this.fetch();
 };
 
 application.prototype.send = function(msg) {
-
 
   $.ajax({
   // This is the url you should use to communicate with the parse API server.
@@ -26,6 +25,7 @@ application.prototype.send = function(msg) {
     data: JSON.stringify(msg),
     contentType: 'application/json',
     success: function (data) {
+      console.log(data);
       console.log('chatterbox: Message sent');
       
     },
@@ -51,7 +51,6 @@ application.prototype.fetch = function(room = 'lobby') {
       console.log('fetch called: ', data);
       //find rooms
       
-
       data.results.forEach(m => {
        
         rooms[m.roomname] = true;
@@ -99,8 +98,13 @@ application.prototype.handleUsernameClick = function(username) {
 
 application.prototype.handleSubmit = function(form) {
   // console.log(form);
-  var a = form;
-  console.log(document.getElementById('message').value);
+
+  var tweet = (document.getElementById('message').value);
+  var msg = {};
+  msg.text = tweet;
+  msg.username = window.location.search.slice(10);
+  msg.roomname = document.getElementById('roomSelect').value;
+  this.send(msg);
 };
 
 application.prototype.populateRoomList = function() {
