@@ -1,9 +1,19 @@
 var application = function() {
   this.server = 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages';  
+  this.rooms = {};
 };
 
 application.prototype.init = function() {
+  var handleSubmit = this.handleSubmit;
+  // $(document).ready(function(){
+  $('#send .submit').on('submit', function(event) {
+    console.log(this);
+    event.preventDefault();
+    handleSubmit();
+  });
+  // });
 
+  this.fetch();
 };
 
 application.prototype.send = function(msg) {
@@ -17,6 +27,7 @@ application.prototype.send = function(msg) {
     contentType: 'application/json',
     success: function (data) {
       console.log('chatterbox: Message sent');
+      
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -27,14 +38,30 @@ application.prototype.send = function(msg) {
   //$.post('http://parse.sfm6.hackreactor.com/api/users',data,callback);
 };
 
-application.prototype.fetch = function() {
+application.prototype.fetch = function(room = 'lobby') {
+  var renderMessage = this.renderMessage;
+  var rooms = this.rooms;
+  var populateRooms = this.populateRoomList;
   $.ajax({
   // This is the url you should use to communicate with the parse API server.
     url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
-      console.log('chatterbox: Message sent');
+      console.log('fetch called: ', data);
+      //find rooms
+      
+
+      data.results.forEach(m => {
+       
+        rooms[m.roomname] = true;
+        if (m.roomname === room) {
+          renderMessage(m);
+        }
+        //console.log(m.roomname);
+
+      });
+      populateRooms();
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -74,8 +101,14 @@ application.prototype.handleSubmit = function(form) {
   // console.log(form);
   var a = form;
   console.log(document.getElementById('message').value);
-  console.log(username);
+};
+
+application.prototype.populateRoomList = function() {
+  for (var room in this.rooms) {
+    this.renderRoom(room);
+  }
 };
 
 var app = new application();
+app.init();
 

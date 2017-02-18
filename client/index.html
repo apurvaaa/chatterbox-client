@@ -30,15 +30,20 @@
       <!-- Your HTML goes here! -->
       <div>
         <select id = 'roomSelect' name = 'rooms'>Rooms
+          <option selected name="lobby">lobby</option>
         </select>
       </div>
-     <!--  <form id = "send" onsubmit="app.handleSubmit(this)"> -->
-     <div id="send">
+     <!--  <form id = "send" onsubmit="app.handleSubmit(this)"> -->   
+     <form action="#" id="send" method="post" onsubmit="app.handleSubmit()">
+      <input type="text" name="message" id="message"/>
+      <input type="submit" name="submit" class="submit"/>
+    </form>
+     <!-- <div id="send">
       <form  class = "submit" onsubmit="app.handleSubmit(this)">
         <input type="text" id = "message" name="messagedata">
         <button  type = "submit" >Submit</button>
       </form>
-    </div>
+    </div> -->
       <!-- </form> -->
       <div id="chats"></div>
     </div>
