@@ -7,7 +7,8 @@ var application = function(server) {
 
 application.prototype.init = function() {
   var appContext = this;
-  this.fetch();
+  // this.fetch();
+
   //setInterval(this.fetch.bind(appContext), 2000);
  
   $(document).ready(function() {
@@ -29,12 +30,25 @@ application.prototype.init = function() {
     $('#addRoom').on('click', function(event) {
       event.preventDefault();
       var room = document.getElementById('message').value;
+      appContext.rooms[room] = true;
       appContext.renderRoom(appContext._escapeRegExp(room));
     });
   });
+
+  this.update();
   // debugger
   
 };
+
+application.prototype.update = function() {
+  var room = $('#roomSelect :selected').text();
+  var appContext = this;
+  this.fetch(room);
+  setTimeout(function() {
+    appContext.update();
+  }, 2000);
+};
+
 
 application.prototype.send = function(msg) {
   //debugger
@@ -112,8 +126,9 @@ application.prototype.renderMessage = function(message) {
   $messageBody.html(message.text);
   $msg.append($username);
   $msg.append($messageBody);
+  // debugger;
   if (this.friends.has(message.username)) {
-    $msg.addClass('.friend');
+    $msg.addClass('friend');
   }
   $('#chats').append($msg);
 };
@@ -131,7 +146,7 @@ application.prototype.renderRoom = function(room, select = false) {
 application.prototype.handleUsernameClick = function(username) {
   // console.log(username.innerHTML);
   // debugger;
-  this.friends[username.innerHTML] = true;
+  this.friends.add(username.innerHTML);
   $('.username').filter(function() { return this.innerHTML === username.innerHTML; })
    .parent().addClass('friend');
 };
