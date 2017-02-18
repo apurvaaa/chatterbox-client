@@ -4,12 +4,19 @@ var application = function() {
 };
 
 application.prototype.init = function() {
-  var handleSubmit = this.handleSubmit;
+  var appContext = this;
+ 
   // $(document).ready(function(){
   $('#send .submit').on('submit', function(event) {
-    console.log(this);
+    //console.log(this);
     event.preventDefault();
-    handleSubmit();
+    appContext.handleSubmit();
+  });
+
+  $('#addRoom').on('click', function(event) {
+    event.preventDefault();
+    var room = document.getElementById('message').value;
+    appContext.renderRoom(appContext._escapeRegExp(room));
   });
   // });
   // debugger
@@ -17,7 +24,7 @@ application.prototype.init = function() {
 };
 
 application.prototype.send = function(msg) {
-
+  //debugger
   $.ajax({
   // This is the url you should use to communicate with the parse API server.
     url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
@@ -42,19 +49,25 @@ application.prototype.fetch = function(room = 'lobby') {
   var renderMessage = this.renderMessage;
   var rooms = this.rooms;
   var populateRooms = this.populateRoomList;
+  var removeEscape = this._escapeRegExp;
   $.ajax({
   // This is the url you should use to communicate with the parse API server.
     url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
     type: 'GET',
+    data: {order: '-createdAt', limit: 600},
     contentType: 'application/json',
     success: function (data) {
       console.log('fetch called: ', data);
       //find rooms
       
       data.results.forEach(m => {
-       
         rooms[m.roomname] = true;
         if (m.roomname === room) {
+          m.text = removeEscape(m.text);
+          if (m.text.indexOf('hello world') !== -1) {
+            debugger;
+          }
+          m.username = removeEscape(m.username);
           renderMessage(m);
         }
         //console.log(m.roomname);
@@ -75,6 +88,7 @@ application.prototype.clearMessages = function() {
 };
 
 application.prototype.renderMessage = function(message) {
+  
   var $msg = $('<div class = "text"></div>');
   //pass the rooms later
   var $username = $('<a class = "username" href="#" onclick="app.handleUsernameClick(this) "></a>');
@@ -111,6 +125,15 @@ application.prototype.populateRoomList = function() {
   for (var room in this.rooms) {
     this.renderRoom(room);
   }
+};
+
+application.prototype._escapeRegExp = function (str) {
+  if (str === undefined || str === '') {
+    return '';
+  }
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\\\^\$\|\<\>]/g, ' ');
+  
+  // return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\<\>]/g, '\\$&');
 };
 
 var app = new application();
