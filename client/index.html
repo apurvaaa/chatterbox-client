@@ -22,12 +22,26 @@
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
+    <
   </head>
   <body>
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
+      <div>
+        <select id = 'roomSelect' name = 'rooms'>Rooms
+        </select>
+      </div>
+     <!--  <form id = "send" onsubmit="app.handleSubmit(this)"> -->
+     <div id="send">
+      <form  class = "submit" onsubmit="app.handleSubmit(this)">
+        <input type="text" id = "message" name="messagedata">
+        <button  type = "submit" >Submit</button>
+      </form>
     </div>
-    <div id="chats"></div>
+      <!-- </form> -->
+      <div id="chats"></div>
+    </div>
+    
   </body>
 </html>

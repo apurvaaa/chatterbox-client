@@ -119,6 +119,7 @@ describe('chatterbox', function() {
 
         app.init();
 
+        debugger;
         $('#send .submit').trigger('submit');
         expect(app.handleSubmit.calledOnce).to.be.true;
 
