@@ -22,7 +22,6 @@
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
-    <
   </head>
   <body>
     <div id="main">
@@ -32,24 +31,12 @@
         <select id = 'roomSelect' name = 'rooms'>Rooms
         </select>
       </div>
-     <!--  <form id = "send" onsubmit="app.handleSubmit(this)"> -->   
      <form action="" id="send" method="post">
       <input type="text" name="message" id="message" />
-      <input type="submit" name="submit" class="submit"/>
+      <input type="submit" name="Send" class="submit" value = "Send Message"/>
+      <button id='addRoom' onclick=''>Add & Enter Room</button>
     </form>
-
-
-
-    <button id='addRoom' onclick=''>Add and Enter Room</button>
-     <!-- <div id="send">
-      <form  class = "submit" onsubmit="app.handleSubmit(this)">
-        <input type="text" id = "message" name="messagedata">
-        <button  type = "submit" >Submit</button>
-      </form>
-    </div> -->
-      <!-- </form> -->
       <div id="chats"></div>
     </div>
-    
   </body>
 </html>

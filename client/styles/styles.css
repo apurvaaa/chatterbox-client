@@ -6,13 +6,14 @@ body {
 }
 
 #main, #chats {
-    width: 500px;
-    margin: auto;
-    text-align: left;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
     background: white;
-    padding: 50px 60px;
+    
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
+    position:relative;
 }
 
 #main h1 {
@@ -20,6 +21,9 @@ body {
     font-size: 35px;
     margin-bottom: 5px;
     padding: 5px;
+    margin-left: 0 auto;
+    margin-right: 0 auto;
+    position: relative;
 }
 
 #main h1 span {
@@ -34,6 +38,10 @@ body {
     border: 1px solid red;
     background: #FDEFF0;
     padding: 20px;
+}
+
+#addRoom {
+  
 }
 
 #main .success {
@@ -53,7 +61,9 @@ form {
 }
 
 form input[type=text] {
-    margin-right: 10px;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 15px;
     width: 70%;
     font-size: 12px;
     padding: 5px;
@@ -67,6 +77,7 @@ form input[type=text] {
 
 .chat .username {
     font-weight: 800;
+    color: black;
 }
 
 .chat:hover {
@@ -85,7 +96,7 @@ form input[type=text] {
 
 .friend {
     color: #fff;
-    background-color: #0090da;
+    background-color: #778899;
     font-weight:  bold;
 }
 

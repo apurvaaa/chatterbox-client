@@ -2,42 +2,36 @@ var application = function(server) {
   this.server = server;  
   this.rooms = {};
   this.friends = new Set();
-  //this.selectedRoom = 'lobby';
 };
 
 application.prototype.init = function() {
   var appContext = this;
-  // this.fetch();
-
-  //setInterval(this.fetch.bind(appContext), 2000);
- 
   $(document).ready(function() {
     $('form').submit(function(event) {
       console.log(this);
-      //debugger;
       event.preventDefault();
       appContext.handleSubmit();
       appContext.fetch();
+
     });
 
     $('#roomSelect').change(function(event) {
-     // event.preventDefault();
-     //debugger;
       appContext.fetch(this.value);
-
     });
 
     $('#addRoom').on('click', function(event) {
       event.preventDefault();
       var room = document.getElementById('message').value;
+      $('#message')[0].value = '';
+      debugger;
       appContext.rooms[room] = true;
       appContext.renderRoom(appContext._escapeRegExp(room));
+      $('#roomSelect').val(room).trigger('change');
+      
     });
   });
 
-  this.update();
-  // debugger
-  
+  this.update();  
 };
 
 application.prototype.update = function() {
@@ -49,10 +43,9 @@ application.prototype.update = function() {
   }, 2000);
 };
 
-
 application.prototype.send = function(msg) {
-  //debugger
   var appContext = this;
+  $('#message')[0].value = '';
 
   $.ajax({
   // This is the url you should use to communicate with the parse API server.
@@ -61,7 +54,6 @@ application.prototype.send = function(msg) {
     data: JSON.stringify(msg),
     contentType: 'application/json',
     success: function (data) {
-      //debugger;
       appContext.fetch(msg.roomname);
       console.log('chatterbox: Message sent');
       
@@ -72,9 +64,9 @@ application.prototype.send = function(msg) {
     }
   });
 
-  //$.post('http://parse.sfm6.hackreactor.com/api/users',data,callback);
 };
 
+//when i grow up i will learn to use where: {createdAt: {'$gt': '2017-02-19T00:17:59.432Z'}
 application.prototype.fetch = function(room = 'lobby') {
   var appContext = this;
   var rooms = this.rooms;
@@ -90,18 +82,16 @@ application.prototype.fetch = function(room = 'lobby') {
       //find rooms
       appContext.clearMessages();
       data.results.forEach(m => {
-        rooms[m.roomname] = true;
-        //debugger;
+        if (!rooms[m.roomname]) { 
+          rooms[m.roomname] = true;
+          appContext.renderRoom(m.roomname);
+        }
         if (m.roomname === room) {
           m.text = removeEscape(m.text);
           m.username = removeEscape(m.username);
           appContext.renderMessage(m);
         }
-        //console.log(m.roomname);
-
       });
-      //debugger;
-      appContext.populateRoomList(room);
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -112,21 +102,16 @@ application.prototype.fetch = function(room = 'lobby') {
 
 application.prototype.clearMessages = function() {
   $('#chats').html('');
-  $('#roomSelect').html('');
-
 };
 
 application.prototype.renderMessage = function(message) {
-  
-  var $msg = $('<div class = "text"></div>');
-  //pass the rooms later
+  var $msg = $('<div class = "text chat"></div>');
   var $username = $('<a class = "username" href="#" onclick="app.handleUsernameClick(this) "></a>');
   $username.html(message.username);
   var $messageBody = $('<div></div>');
   $messageBody.html(message.text);
   $msg.append($username);
   $msg.append($messageBody);
-  // debugger;
   if (this.friends.has(message.username)) {
     $msg.addClass('friend');
   }
@@ -144,18 +129,13 @@ application.prototype.renderRoom = function(room, select = false) {
 };
 
 application.prototype.handleUsernameClick = function(username) {
-  // console.log(username.innerHTML);
-  // debugger;
   this.friends.add(username.innerHTML);
   $('.username').filter(function() { return this.innerHTML === username.innerHTML; })
    .parent().addClass('friend');
 };
 
 
-
 application.prototype.handleSubmit = function(form) {
-  // console.log(form);
-
   var tweet = (document.getElementById('message').value);
   var msg = {};
   msg.text = tweet;
@@ -164,25 +144,12 @@ application.prototype.handleSubmit = function(form) {
   this.send(msg);
 };
 
-application.prototype.populateRoomList = function(selectedRoom) {
-  //$('select').find('')
-  for (var room in this.rooms) {
-    if (room === selectedRoom) {
-      this.renderRoom(room, true);
-    } else {
-      this.renderRoom(room);
-    }
-  }
-
-};
 
 application.prototype._escapeRegExp = function (str) {
   if (str === undefined || str === '') {
     return '';
   }
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\\\^\$\|\<\>]/g, ' ');
-  
-  // return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\<\>]/g, '\\$&');
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\\\^\$\|\<\>]/g, ' ');  
 };
 
 var app = new application('http://parse.sfm6.hackreactor.com/chatterbox/classes/messages');
